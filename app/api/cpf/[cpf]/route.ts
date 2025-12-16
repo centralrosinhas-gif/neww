@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server'
 
 export async function GET(
   request: Request,
-  { params }: { params: { cpf: string } }
+  context: { params: Promise<{ cpf: string }> }
 ) {
   try {
-    const { cpf } = params
+    const { cpf } = await context.params
     
     // Fazer a requisição do servidor (backend)
     const response = await fetch(`http://89.116.24.233:3000/api/cpf/${cpf}`, {
