@@ -100,7 +100,7 @@ export default function RoutePage() {
 
     try {
       const cpfNumbers = cpf.replace(/\D/g, "")
-      const response = await fetch(`http://89.116.24.233:3000/api/cpf/${cpfNumbers}`)
+      const response = await fetch(`/api/cpf/${cpfNumbers}`)
       const data = await response.json()
 
       if (data.NASC) {
