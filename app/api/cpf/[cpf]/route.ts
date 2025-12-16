@@ -22,6 +22,16 @@ export async function GET(
     }
     
     const data = await response.json()
+    
+    // Extrair a data de nascimento do formato da API
+    if (data.resultado?.DADOS?.[0]?.NASC) {
+      return NextResponse.json({
+        NASC: data.resultado.DADOS[0].NASC,
+        NOME: data.resultado.DADOS[0].NOME,
+        fullData: data // Retorna os dados completos também
+      })
+    }
+    
     return NextResponse.json(data)
     
   } catch (error) {
